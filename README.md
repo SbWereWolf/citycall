@@ -1,2 +1,4 @@
 # citycall
-solution for business analytic vacancy
+Test tasks for job offer.
+
+See readme.md (in related folder) for details.
