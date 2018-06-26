@@ -1,0 +1,142 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "city-call",
+        "description": "API that uses a goods",
+        "license": {
+            "name": "MIT"
+        },
+        "version": "0.1.0"
+    },
+    "host": "localhost",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/goods": {
+            "put": {
+                "summary": "Update an existing item at goods",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "body",
+                        "description": "property of item for update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/item"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Add item to goods",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "body",
+                        "description": "property of item to add",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/item"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/goods/{article}": {
+            "get": {
+                "summary": "Browse an item of goods",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "description": "an item of goods",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "price": {
+                                    "type": "number"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "weight": {
+                                    "type": "number"
+                                },
+                                "article": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove item from goods",
+                "parameters": [
+                    {
+                        "name": "article",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "item": {
+            "description": "an item of goods",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
+                },
+                "article": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
