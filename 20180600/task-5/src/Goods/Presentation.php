@@ -24,17 +24,12 @@ class Presentation
     private $response = null;
     private $item = null;
     private $isSuccess = false;
-    /**
-     * @var LogicResult
-     */
-    private $result;
 
     function __construct(Response $response, LogicResult $result)
     {
         $this->response = $response;
         $this->item = $result->getItem();
         $this->isSuccess = $result->isOperationSuccess();
-        $this->result = $result;
     }
 
     public function fromCreate(): Response
@@ -47,10 +42,17 @@ class Presentation
     private function setupByMethod(string $method): Response
     {
         $response = $this->response;
-        $item = $this->item;
 
         $statusCode = $this->getStatusCode($method);
-        $response = $response->withJson($item, $statusCode);
+        $response = $response->withStatus($statusCode);
+
+        if ($method == self::GET && !empty($this->item->getArticle())) {
+            $item = $this->item;
+
+            $output = new PublicItem($item);
+
+            $response = $response->withJson($output);
+        }
 
         return $response;
     }

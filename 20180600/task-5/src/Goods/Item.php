@@ -8,28 +8,29 @@ namespace Goods;
  */
 class Item
 {
-    private $id = 0;
+    private $article = '';
     private $title = '';
     private $price = 0.0;
     private $description = '';
     private $weight = 0.0;
-    private $article = '';
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getArticle(): string
     {
-        return $this->id;
+        return $this->article;
     }
 
     /**
-     * @param int $id
+     * @param string $article
      * @return Item
      */
-    public function setId(int $id): self
+    public function setArticle(string $article): self
     {
-        $this->id = $id;
+        $this->article = $article;
+
+        return $this;
     }
 
     /**
@@ -47,6 +48,8 @@ class Item
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
@@ -64,6 +67,8 @@ class Item
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
     }
 
     /**
@@ -81,6 +86,8 @@ class Item
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -98,24 +105,7 @@ class Item
     public function setWeight(float $weight): self
     {
         $this->weight = $weight;
+
+        return $this;
     }
-
-    /**
-     * @return string
-     */
-    public function getArticle(): string
-    {
-        return $this->article;
-    }
-
-    /**
-     * @param string $article
-     * @return Item
-     */
-    public function setArticle(string $article): self
-    {
-        $this->article = $article;
-    }
-
-
 }

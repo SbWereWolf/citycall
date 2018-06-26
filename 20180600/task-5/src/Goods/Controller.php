@@ -21,20 +21,22 @@ class Controller
     private $response = null;
     private $arguments = array();
     private $method = '';
+    private $dataPath = '';
 
-    function __construct(Request $request, Response $response, array $arguments, string $method)
+    function __construct(Request $request, Response $response, array $parametersInPath, string $method, string $dataPath)
     {
-        $this->arguments = $arguments;
+        $this->arguments = $parametersInPath;
         $this->request = $request;
         $this->response = $response;
         $this->method = $method;
+        $this->dataPath = $dataPath;
     }
 
     public function process(): Response
     {
         $request = $this->request;
         $arguments = $this->arguments;
-        $reception = new  Reception( $request, $arguments);
+        $reception = new  Reception($request, $arguments);
 
         $method = $this->method;
         $response = $this->response;
@@ -60,9 +62,9 @@ class Controller
     {
         $item = $reception->toDelete();
 
-        $logicResult = (new Logic($item))->delete();
+        $logicResult = (new Logic($item, $this->dataPath))->delete();
 
-        $response = (new Presentation($this->response,$logicResult))->fromDelete();
+        $response = (new Presentation($this->response, $logicResult))->fromDelete();
 
         return $response;
     }
@@ -71,9 +73,9 @@ class Controller
     {
         $item = $reception->toRead();
 
-        $logicResult = (new Logic($item))->read();
+        $logicResult = (new Logic($item, $this->dataPath))->read();
 
-        $response = (new Presentation($this->response,$logicResult))->fromRead();
+        $response = (new Presentation($this->response, $logicResult))->fromRead();
 
         return $response;
     }
@@ -82,9 +84,9 @@ class Controller
     {
         $item = $reception->toCreate();
 
-        $logicResult = (new Logic($item))->create();
+        $logicResult = (new Logic($item, $this->dataPath))->create();
 
-        $response = (new Presentation($this->response,$logicResult))->fromCreate();
+        $response = (new Presentation($this->response, $logicResult))->fromCreate();
 
         return $response;
     }
@@ -93,9 +95,9 @@ class Controller
     {
         $item = $reception->toUpdate();
 
-        $logicResult = (new Logic($item))->update();
+        $logicResult = (new Logic($item, $this->dataPath))->update();
 
-        $response = (new Presentation($this->response,$logicResult))->fromUpdate();
+        $response = (new Presentation($this->response, $logicResult))->fromUpdate();
 
         return $response;
     }

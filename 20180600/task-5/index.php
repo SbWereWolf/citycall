@@ -1,7 +1,9 @@
 <?php
-define('APPLICATION_ROOT', realpath(__DIR__) . DIRECTORY_SEPARATOR . '..');
+define('APPLICATION_ROOT', realpath(__DIR__));
 
 require APPLICATION_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+define('DATA_PATH', APPLICATION_ROOT . DIRECTORY_SEPARATOR . 'sqlite-db' . DIRECTORY_SEPARATOR . 'goods.sqlite');
 
 use Goods\Controller;
 use Slim\Container;
@@ -25,8 +27,8 @@ $app = new \Slim\App($container);
  *   consumes={"application/json"},
  *     @SWG\Info(
  *         version="0.1.0",
- *         title="storage-for-all-things",
- *         description="API that uses a storage-for-all-things",
+ *         title="city-call",
+ *         description="API that uses a goods",
  *         @SWG\License(name="MIT")
  *     ),
  * )
@@ -38,16 +40,12 @@ $app = new \Slim\App($container);
  *   type="object",
  *   description="an item of goods",
  *   @SWG\Property(
- *          property="id",
- *          type="int"
- *   ),
- *   @SWG\Property(
  *          property="title",
  *          type="string"
  *   ),
  *   @SWG\Property(
  *          property="price",
- *          type="float"
+ *          type="number"
  *   ),
  *   @SWG\Property(
  *          property="description",
@@ -55,7 +53,7 @@ $app = new \Slim\App($container);
  *   ),
  *   @SWG\Property(
  *          property="weight",
- *          type="float"
+ *          type="number"
  *   ),
  *   @SWG\Property(
  *          property="article",
@@ -69,19 +67,23 @@ $app = new \Slim\App($container);
 /**
  * @SWG\Post(
  *     path="/goods",
- *     summary="Add empty item to goods",
+ *     summary="Add item to goods",
+ *     @SWG\Parameter(
+ *         name="item",
+ *         in="body",
+ *         description="property of item to add",
+ *         required=true,
+ *         @SWG\Schema(ref="#/definitions/item"),
+ *     ),
  *     @SWG\Response(
  *         response=201,
  *         description="Successful operation",
- *        @SWG\Schema(
- *            ref="$/definitions/item"
- *        )
  *     ),
  * )
  */
 $app->post('/goods', function (Request $request, Response $response, array $arguments) {
 
-    $controller = new Controller($request, $response, $arguments, Controller::POST);
+    $controller = new Controller($request, $response, $arguments, Controller::POST, DATA_PATH);
 
     $response = $controller->process();
 
@@ -90,12 +92,12 @@ $app->post('/goods', function (Request $request, Response $response, array $argu
 
 /**
  * @SWG\Get(
- *    path="/goods/{id}",
+ *    path="/goods/{article}",
  *     summary="Browse an item of goods",
  *    @SWG\Parameter(
- *        name="id",
+ *        name="article",
  *        in="path",
- *        type="int",
+ *        type="string",
  *        required=true
  *    ),
  *    @SWG\Response(
@@ -107,9 +109,9 @@ $app->post('/goods', function (Request $request, Response $response, array $argu
  *    ),
  * )
  */
-$app->get('/goods/{id}', function (Request $request, Response $response, array $arguments) {
+$app->get('/goods/{article}', function (Request $request, Response $response, array $arguments) {
 
-    $controller = new Controller($request, $response, $arguments, Controller::GET);
+    $controller = new Controller($request, $response, $arguments, Controller::GET, DATA_PATH);
 
     $response = $controller->process();
 
@@ -118,7 +120,7 @@ $app->get('/goods/{id}', function (Request $request, Response $response, array $
 
 /**
  * @SWG\Put(
- *     path="/goods/{id}",
+ *     path="/goods",
  *     summary="Update an existing item at goods",
  *     @SWG\Parameter(
  *         name="item",
@@ -135,7 +137,7 @@ $app->get('/goods/{id}', function (Request $request, Response $response, array $
  */
 $app->put('/goods', function (Request $request, Response $response, array $arguments) {
 
-    $controller = new Controller($request, $response, $arguments, Controller::PUT);
+    $controller = new Controller($request, $response, $arguments, Controller::PUT, DATA_PATH);
 
     $response = $controller->process();
 
@@ -144,21 +146,31 @@ $app->put('/goods', function (Request $request, Response $response, array $argum
 
 /**
  * @SWG\Delete(
- *    path="/goods/{id}",
+ *    path="/goods/{article}",
  *     summary="Remove item from goods",
  *    @SWG\Parameter(
- *        name="id",
+ *        name="article",
  *        in="path",
- *        type="int",
+ *        type="string",
  *        required=true,
  *    ),
+ *     @SWG\Response(
+ *         response=204,
+ *         description="Successful operation",
+ *     ),
  * )
  */
-$app->delete('/goods/{id}', function (Request $request, Response $response, array $arguments) {
+$app->delete('/goods/{article}', function (Request $request, Response $response, array $arguments) {
 
-    $controller = new Controller($request, $response, $arguments, Controller::DELETE);
+    $controller = new Controller($request, $response, $arguments, Controller::DELETE, DATA_PATH);
 
     $response = $controller->process();
 
     return $response;
 });
+
+try {
+    $app->run();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
