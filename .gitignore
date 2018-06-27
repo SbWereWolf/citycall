@@ -1,3 +1,4 @@
 .idea/*
 20180600/task-5/composer.lock
 20180600/task-5/vendor
+20180600/task-5/sqlite-db/goods.sqlite

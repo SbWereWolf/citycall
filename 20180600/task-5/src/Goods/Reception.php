@@ -26,34 +26,6 @@ class Reception
         $this->arguments = $arguments;
     }
 
-    public function toCreate(): Item
-    {
-        $item = $this->setupFromBody();
-
-        return $item;
-    }
-
-    private function setupFromBody(): Item
-    {
-        $body = $this->request->getParsedBody();
-        $parser = new ArrayParser($body);
-
-        $title = self::getTitle($parser);
-        $price = self::getPrice($parser);
-        $description = self::getDescription($parser);
-        $weight = self::getWeight($parser);
-        $article = self::getArticle($parser);
-
-        $item = (new Item())
-            ->setTitle($title)
-            ->setPrice($price)
-            ->setDescription($description)
-            ->setWeight($weight)
-            ->setArticle($article);
-
-        return $item;
-    }
-
     private static function getTitle(ArrayParser $parser): string
     {
         $value = $parser->getStringField(self::TITLE);
@@ -84,20 +56,16 @@ class Reception
         return $value;
     }
 
-    public function toRead(): Item
+    public function toCreate(): Item
     {
-        $item = $this->setupFromPath();
+        $item = $this->setupFromBody();
 
         return $item;
     }
 
-    private function setupFromPath(): Item
+    public function toRead(): Item
     {
-        $arguments = $this->arguments;
-        $parser = new ArrayParser($arguments);
-
-        $article = self::getArticle($parser);
-        $item = (new Item())->setArticle($article);
+        $item = $this->setupFromPath();
 
         return $item;
     }
@@ -112,6 +80,38 @@ class Reception
     public function toUpdate(): Item
     {
         $item = $this->setupFromBody();
+
+        return $item;
+    }
+
+    private function setupFromBody(): Item
+    {
+        $body = $this->request->getParsedBody();
+        $parser = new ArrayParser($body);
+
+        $title = self::getTitle($parser);
+        $price = self::getPrice($parser);
+        $description = self::getDescription($parser);
+        $weight = self::getWeight($parser);
+        $article = self::getArticle($parser);
+
+        $item = (new Item())
+            ->setTitle($title)
+            ->setPrice($price)
+            ->setDescription($description)
+            ->setWeight($weight)
+            ->setArticle($article);
+
+        return $item;
+    }
+
+    private function setupFromPath(): Item
+    {
+        $arguments = $this->arguments;
+        $parser = new ArrayParser($arguments);
+
+        $article = self::getArticle($parser);
+        $item = (new Item())->setArticle($article);
 
         return $item;
     }

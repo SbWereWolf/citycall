@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+  <script src="test/jqueryui.custom.js"></script>
+  <link type="text/css" href="test/jqueryui.custom.css" rel="stylesheet" />
+  <style>
+    body{font:normal 9pt Arial,sans-serif;}
+  </style>
+</head>
+<body>
+
+<label for="azs_number">Номер АЗС: </label>
+<input id="azs_number" />
+<label for="azs_region">Регион: </label>
+<input id="azs_region" />
+<label for="azs_city">Город: </label>
+<input id="azs_city" />
+<label for="azs_street">Улица: </label>
+<input id="azs_street" />
+
+<script>
+    $( "#azs_number" ).autocomplete({
+        source: function(request, response){
+            $.ajax({
+                url: "autocomplete.php",
+                type:'get',
+                data:{
+                    maxRows: 20,
+                    number : true,
+                    azs_number: $('#azs_number').val(), // request.term,
+                    azs_region: $('#azs_region').val(),
+                    azs_city: $('#azs_city').val(),
+                    azs_street: $('#azs_street').val(),
+                },
+                response:'text',
+                success: function(data){
+                    var arr_from_json = JSON.parse(data);
+                    response($.map(arr_from_json, function(e) { return e['number_azs'] }));
+                }
+            });
+        }
+    });
+    $( "#azs_region" ).autocomplete({
+        source: function(request, response){
+            $.ajax({
+                url: "autocomplete.php",
+                type:'get',
+                data:{
+                    maxRows: 20,
+                    region : true,
+                    azs_number: $('#azs_number').val(), // request.term,
+                    azs_region: $('#azs_region').val(),
+                    azs_city: $('#azs_city').val(),
+                    azs_street: $('#azs_street').val(),
+                },
+                response:'text',
+                success: function(data){
+                    var arr_from_json = JSON.parse(data);
+                    response($.map(arr_from_json, function(e) { return e['region_azs'] }));
+                }
+            });
+        }
+    });
+    $( "#azs_city" ).autocomplete({
+        source: function(request, response){
+            $.ajax({
+                url: "autocomplete.php",
+                type:'get',
+                data:{
+                    maxRows: 20,
+                    city : true,
+                    azs_number: $('#azs_number').val(), // request.term,
+                    azs_region: $('#azs_region').val(),
+                    azs_city: $('#azs_city').val(),
+                    azs_street: $('#azs_street').val(),
+                },
+                response:'text',
+                success: function(data){
+                    var arr_from_json = JSON.parse(data);
+                    response($.map(arr_from_json, function(e) { return e['city_azs'] }));
+                }
+            });
+        }
+    });
+    $( "#azs_street" ).autocomplete({
+        source: function(request, response){
+            $.ajax({
+                url: "autocomplete.php",
+                type:'get',
+                data:{
+                    maxRows: 20,
+                    street : true,
+                    azs_number: $('#azs_number').val(), // request.term,
+                    azs_region: $('#azs_region').val(),
+                    azs_city: $('#azs_city').val(),
+                    azs_street: $('#azs_street').val(),
+                },
+                response:'text',
+                success: function(data){
+                    var arr_from_json = JSON.parse(data);
+                    response($.map(arr_from_json, function(e) { return e['street_azs'] }));
+                }
+            });
+        }
+    });
+  </script>
+</body>
+</html>
