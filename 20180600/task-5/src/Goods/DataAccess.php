@@ -23,32 +23,6 @@ class DataAccess
         $this->dsn = 'sqlite:' . $dataPath;
     }
 
-    /**
-     * @return string
-     */
-    private static function getValuesPhrase(): string
-    {
-        return self::ARTICLE
-            . ',' . self::TITLE
-            . ', CAST(' . self::PRICE . ' as FLOAT),'
-            . self::DESCRIPTION
-            . ', CAST(' . self::WEIGHT . ' as FLOAT)';
-    }
-
-    /**
-     * @return string
-     */
-    private static function getSetPhrase(): string
-    {
-        $result = '
-title = ' . self::TITLE . ',
-price = CAST(' . self::PRICE . ' as FLOAT),
-description =' . self::DESCRIPTION . ', 
-weight =  CAST(' . self::WEIGHT . ' as FLOAT)';
-
-        return $result;
-    }
-
     public function insert(Item $item): bool
     {
         $valuesPhrase = self::getValuesPhrase();
@@ -70,6 +44,27 @@ VALUES ($valuesPhrase);
         $isSuccess = $request->execute();
 
         return $isSuccess;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getValuesPhrase(): string
+    {
+        return self::ARTICLE
+            . ',' . self::TITLE
+            . ', CAST(' . self::PRICE . ' as FLOAT),'
+            . self::DESCRIPTION
+            . ', CAST(' . self::WEIGHT . ' as FLOAT)';
+    }
+
+    /**
+     * @return \PDO
+     */
+    private function getDbConnection(): \PDO
+    {
+        $dbConnection = new \PDO($this->dsn);
+        return $dbConnection;
     }
 
     public function select(Item $item): bool
@@ -109,6 +104,32 @@ WHERE
         return $isSuccess;
     }
 
+    /**
+     * @param $dataSet
+     * @return bool
+     */
+    private function parseOutput(array $dataSet): bool
+    {
+        $parser = new ArrayParser($dataSet);
+
+        $title = $parser->getStringField('title');
+        $price = $parser->getFloatField('price');
+        $description = $parser->getStringField('description');
+        $weight = $parser->getFloatField('weight');
+        $article = $parser->getStringField('article');
+
+        $item = (new Item())
+            ->setTitle($title)
+            ->setPrice($price)
+            ->setDescription($description)
+            ->setWeight($weight)
+            ->setArticle($article);
+
+        $this->data = $item;
+
+        return true;
+    }
+
     public function update(Item $item): bool
     {
         $setPhrase = self::getSetPhrase();
@@ -133,6 +154,20 @@ WHERE
         $isSuccess = $request->execute();
 
         return $isSuccess;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getSetPhrase(): string
+    {
+        $result = '
+title = ' . self::TITLE . ',
+price = CAST(' . self::PRICE . ' as FLOAT),
+description =' . self::DESCRIPTION . ', 
+weight =  CAST(' . self::WEIGHT . ' as FLOAT)';
+
+        return $result;
     }
 
     public function delete(Item $item): bool
@@ -160,40 +195,5 @@ WHERE
     public function getData(): Item
     {
         return $this->data;
-    }
-
-    /**
-     * @return \PDO
-     */
-    private function getDbConnection(): \PDO
-    {
-        $dbConnection = new \PDO($this->dsn);
-        return $dbConnection;
-    }
-
-    /**
-     * @param $dataSet
-     * @return bool
-     */
-    private function parseOutput(array $dataSet): bool
-    {
-        $parser = new ArrayParser($dataSet);
-
-        $title = $parser->getStringField('title');
-        $price = $parser->getFloatField('price');
-        $description = $parser->getStringField('description');
-        $weight = $parser->getFloatField('weight');
-        $article = $parser->getStringField('article');
-
-        $item = (new Item())
-            ->setTitle($title)
-            ->setPrice($price)
-            ->setDescription($description)
-            ->setWeight($weight)
-            ->setArticle($article);
-
-        $this->data = $item;
-
-        return true;
     }
 }

@@ -30,7 +30,7 @@ class LogicResult
     /**
      * @return Item|null
      */
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }

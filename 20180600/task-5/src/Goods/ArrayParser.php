@@ -24,6 +24,19 @@ class ArrayParser
         return $value;
     }
 
+    private function safelyGetByKey(string $key): string
+    {
+
+        $parameters = $this->parameters;
+        $isExists = array_key_exists($key, $parameters);
+
+        $value = null;
+        if ($isExists) {
+            $value = $parameters[$key];
+        }
+        return $value;
+    }
+
     public function getFloatField(string $field): float
     {
 
@@ -35,19 +48,6 @@ class ArrayParser
     {
 
         $value = strval($this->safelyGetByKey($field));
-        return $value;
-    }
-
-    private function safelyGetByKey(string $key): string
-    {
-
-        $parameters = $this->parameters;
-        $isExists = array_key_exists($key, $parameters);
-
-        $value = null;
-        if ($isExists) {
-            $value = $parameters[$key];
-        }
         return $value;
     }
 
